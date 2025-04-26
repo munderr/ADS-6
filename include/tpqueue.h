@@ -15,7 +15,6 @@ class TPQueue {
   Element* first;
 
  public:
-
   TPQueue() : first(nullptr) {}
 
   ~TPQueue() {
