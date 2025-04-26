@@ -2,57 +2,64 @@
 #ifndef INCLUDE_TPQUEUE_H_
 #define INCLUDE_TPQUEUE_H_
 
+#include <stdexcept>
+
 template<typename T>
 class TPQueue {
-private:
-    struct Element {
-        T value;
-        Element* next;
-        Element(const T& val) : value(val), next(nullptr) {}
-    };
-    Element* first;
-public:
-    TPQueue() : first(nullptr) {}
-    ~TPQueue() {
-        while (first) {
-            Element* toDelete = first;
-            first = first->next;
-            delete toDelete;
-        }
+ private:
+  struct Element {
+    T value;
+    Element* next;
+    explicit Element(const T& val) : value(val), next(nullptr) {}
+  };
+  Element* first;
+
+ public:
+
+  TPQueue() : first(nullptr) {}
+
+  ~TPQueue() {
+    while (first) {
+      Element* toDelete = first;
+      first = first->next;
+      delete toDelete;
     }
-    void push(const T& item) {
-        Element* newElem = new Element(item);
-        if (!first) {
-            first = newElem;
-            return;
-        }
-        if (item.prior > first->value.prior) {
-            newElem->next = first;
-            first = newElem;
-            return;
-        }
-        Element* current = first;
-        while (current->next && current->next->value.prior >= item.prior) {
-            current = current->next;
-        }
-        newElem->next = current->next;
-        current->next = newElem;
+  }
+
+  void push(const T& item) {
+    Element* newElem = new Element(item);
+    if (!first) {
+      first = newElem;
+      return;
     }
-    T pop() {
-        if (!first) {
-            throw std::out_of_range("Queue is empty!");
-        }
-        Element* toRemove = first;
-        T tempVal = first->value;
-        first = first->next;
-        delete toRemove;
-        return tempVal;
+    if (item.prior > first->value.prior) {
+      newElem->next = first;
+      first = newElem;
+      return;
     }
+    Element* current = first;
+    while (current->next && current->next->value.prior >= item.prior) {
+      current = current->next;
+    }
+    newElem->next = current->next;
+    current->next = newElem;
+  }
+
+  T pop() {
+    if (!first) {
+      throw std::out_of_range("Queue is empty!");
+    }
+    Element* toRemove = first;
+    T tempVal = first->value;
+    first = first->next;
+    delete toRemove;
+    return tempVal;
+  }
 };
 
 struct SYM {
-    char ch;
-    int prior;
+  char ch;
+  int prior;
 };
 
 #endif  // INCLUDE_TPQUEUE_H_
